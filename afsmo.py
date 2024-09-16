@@ -69,10 +69,12 @@ def gen_input(title, x,y, input_filename, **kwargs):
     nu = len(xu)
     nl = len(xl)
 
+    nmax_iter = 100
+
     xy_upper = "\n".join("{:12.6f}{:12.6f}".format(x,y) for x,y in zip(xu,yu))
     xy_lower = "\n".join("{:12.6f}{:12.6f}".format(x,y) for x,y in zip(xl,yl))
 
-    x_inter = 0.5*(1 + np.cos(np.linspace(np.pi, 0, 100)))
+    x_inter = 0.5*(1 + np.cos(np.linspace(np.pi, 0, nmax_iter)))
     x_inter = "\n".join(["{:12.6f}".format(x) for x in x_inter])
 
     file_content = template.format(airfoil_title= title, 
@@ -80,7 +82,7 @@ def gen_input(title, x,y, input_filename, **kwargs):
                                    xy_upper     = xy_upper, 
                                    n_lower      = nl, 
                                    xy_lower     = xy_lower, 
-                                   n_inter      = 100, 
+                                   n_inter      = nmax_iter, 
                                    x_inter      = x_inter,
                                    **kwargs)
     with open(input_filename, "w") as f:
@@ -128,8 +130,8 @@ def plot(x,y, x_new, y_new, title, aspect_equal=False):
     plots original and smoothed airfoil coordinates for comparison
     """
     plt.title(title)
-    plt.plot(x, y, lw=0.5, color='blue', label="Original")
-    plt.plot(x_new, y_new, lw=0.5, color='red', label="Smoothed")
+    plt.plot(x, y, '-..', lw=0.5, color='blue', label="Original")
+    plt.plot(x_new, y_new, '-..', lw=0.5, color='red', label="Smoothed")
     plt.legend()
     if aspect_equal:
         plt.gca().set_aspect("equal", 'datalim')
@@ -209,7 +211,7 @@ if __name__ == '__main__':
                         metavar='',
                         type=int,  
                         help='MAXIMUM NUMBER OF SMOOTHING ITERATIONS\n        DEFAULT =>80\n'.title(), 
-                        default=80)
+                        default=180)
 
     adopts.add_argument('--ipunch',    
                         metavar='',
